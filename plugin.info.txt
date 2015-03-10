@@ -1,0 +1,7 @@
+base    remoteinf
+author  iamchenxin
+email   iamchenxin@gmail.com
+date    2015-02-27
+name    remoteinf
+desc    send some encrypt inf to an other server
+url     http://dokuwiki.org/plugin:remoteinf
