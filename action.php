@@ -17,8 +17,8 @@ class  action_plugin_remoteinf extends DokuWiki_Action_Plugin{
         $timespan = $this->getConf("refreshtime");
         if($_SERVER['REMOTE_USER']!=null){
             $theuser=$_SERVER['REMOTE_USER'];
-            $entime=time()/(60*$timespan);
-            $pat_str=$entime."~".$theuser."+".$enkey;
+            $entime=floor (time()/(60*$timespan));
+            $pat_str=$entime."~".$theuser."+".$enkey; // must be same with check_data
             $enmd5=md5($pat_str);
             $finalout= base64_encode( $theuser."|".$enmd5 );
             //    setcookie(DOKU_COOKIE, '', time() - 600000, $cookieDir, '', ($conf['securecookie'] && is_ssl()), true);
@@ -31,13 +31,15 @@ class  action_plugin_remoteinf extends DokuWiki_Action_Plugin{
     function check_data($infcode){
         $enkey= $this->getConf("authkey");    // this should be manual record in the other server which receive inf
         $timespan = $this->getConf("refreshtime");  //time span should be manual set to the same in the other server
-        $entime=time()/(60*$timespan);
-
+        $entime=floor (time()/(60*$timespan));
 
         $txtstr=base64_decode($infcode);
-        $txtdata=explode("|",$txtstr,2);
-        $theuser=$txtdata[0];
-        $enmd5_remote=$txtdata[1];
+        $argdata=explode("|",$txtstr,2);
+        if(count($argdata)!=2){
+            return false;
+        }
+        $theuser=$argdata[0];
+        $enmd5_remote=$argdata[1];
 
         $pat_str=$entime."~".$theuser."+".$enkey;
         $enmd5=md5($pat_str);
